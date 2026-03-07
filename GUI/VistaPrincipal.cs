@@ -38,7 +38,7 @@ namespace GUI
 
                 //Console.ReadKey();
 
-            } while (true);
+            } while (op!=0);
         }
     }
 }
