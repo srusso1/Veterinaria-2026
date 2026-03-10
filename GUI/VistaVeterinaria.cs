@@ -120,8 +120,10 @@ namespace GUI
         public void Eliminar()
         {
             Console.Clear();
+
             var lista = servicio.Consultar();
-            Veterinario veterinario = new Veterinario();
+            int IdVeterinario;
+
             if (lista.Count == 0)
             {
                 Console.SetCursorPosition(30, 1); Console.Write("No hay veterinarios registrados, pulse cualquier tecla para continuar...");
@@ -130,23 +132,47 @@ namespace GUI
             }
             Console.SetCursorPosition(30, 5); Console.Write("E L I M I N A R - V E T E R I N A R I O S");
             Console.SetCursorPosition(20, 8); Console.Write("Digite el ID del veterinario a eliminar: ");
-            Console.SetCursorPosition(61, 8); veterinario.Id = int.Parse(Console.ReadLine());
-            if (veterinario.Id < 1)
+            Console.SetCursorPosition(61, 8); IdVeterinario = int.Parse(Console.ReadLine());
+            if (IdVeterinario < 1)
             {
                 Console.SetCursorPosition(20, 15); Console.Write("ID inválido, debe ser un número entero positivo...");
                 return;
             }
 
-            if (servicio.Eliminar(veterinario))
+            var veterinarioEncontrado = servicio.BuscarPorId(IdVeterinario);
+
+            if(veterinarioEncontrado != null)
             {
-                Console.SetCursorPosition(20, 15); Console.Write($"Nombres: {veterinario.Nombres}");
-                Console.SetCursorPosition(20, 16); Console.Write($"Dirección: {veterinario.Direccion}");
-                Console.SetCursorPosition(20, 17); Console.Write($"Teléfono: {veterinario.Telefono}");
-                Console.SetCursorPosition(20, 19); Console.Write("Veterinario eliminado exitosamente...");
+                Console.SetCursorPosition(20, 10); Console.Write("> Información del veterinario a eliminar:");
+                Console.SetCursorPosition(20, 12); Console.Write($"Nombres: {veterinarioEncontrado.Nombres}");
+                Console.SetCursorPosition(20, 13); Console.Write($"Dirección: {veterinarioEncontrado.Direccion}");
+                Console.SetCursorPosition(20, 14); Console.Write($"Teléfono: {veterinarioEncontrado.Telefono}");
+                Console.SetCursorPosition(10, 16); Console.Write("¿Estás seguro de eliminar este veterinario? Digite 1 para CONFIRMAR - 0 para CANCELAR: ");
+                Console.SetCursorPosition(97, 16); int confirmacion = int.Parse(Console.ReadLine());
+                switch (confirmacion)
+                {
+                    case 0:
+                        Console.SetCursorPosition(20, 18); Console.Write("Eliminación cancelada, pulse cualquier tecla para continuar...");
+                        break;
+                    case 1:
+                        bool eliminado = servicio.Eliminar(veterinarioEncontrado);
+                        if (eliminado)
+                        {
+                            Console.SetCursorPosition(20, 18); Console.Write("Veterinario eliminado correctamente, pulse cualquier tecla para continuar...");
+                        }
+                        else
+                        {
+                            Console.SetCursorPosition(20, 18); Console.Write("Error al eliminar el veterinario, pulse cualquier tecla para continuar...");
+                        }
+                        break;
+                    default:
+                        Console.SetCursorPosition(20, 18); Console.Write("Opción inválida, pulse cualquier tecla para continuar...");
+                        break;
+                }
             }
             else
             {
-                Console.SetCursorPosition(20, 15); Console.Write("No se encontró un veterinario con el ID proporcionado...");
+                Console.SetCursorPosition(20, 18); Console.Write($"No se encontró un veterinario con ID {IdVeterinario}, pulse cualquier tecla para continuar...");
             }
 
             Console.ReadKey();

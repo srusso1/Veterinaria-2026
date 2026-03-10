@@ -27,21 +27,12 @@ namespace BLL
 
         public bool Eliminar(Veterinario veterinario)
         {
-            if (lista.Count == 0 || lista == null)
+            if (lista == null || lista.Count == 0)
             {
                 return false;
             }
 
-            if(lista.Any(v => v.Id == veterinario.Id))
-            {
-                lista.Remove(veterinario);
-                return true;
-            }
-
-            else
-            {
-                return false;
-            }
+            return lista.Remove(veterinario);
         }
 
         public string Guardar(Veterinario veterinario)
@@ -60,6 +51,20 @@ namespace BLL
             catch (Exception ex)
             {
                 return ex.Message;
+            }
+        }
+
+        public Veterinario BuscarPorId(int id)
+        {
+            try
+            {
+                return lista.FirstOrDefault(v => v.Id == id);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
             }
         }
     }
