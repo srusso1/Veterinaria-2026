@@ -2,6 +2,7 @@
 using ENTITY;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,16 +14,16 @@ namespace GUI
         ServicioVeterinario servicio = new ServicioVeterinario();
         public void Capturar()
         {
-            int op;
-
             do
             {
                 Veterinario veterinario = new Veterinario();
                 Console.Clear();
+                Console.SetCursorPosition(30, 5); Console.Write("R E G I S T R A R - V E T E R I N A R I O");
                 Console.SetCursorPosition(10,8); Console.Write("ID");
                 Console.SetCursorPosition(10, 10); Console.Write("NOMBRES");
                 Console.SetCursorPosition(10, 12); Console.Write("DIRECCION");
                 Console.SetCursorPosition(10, 14); Console.Write("TELEFONO");
+                Console.SetCursorPosition(10, 20); Console.Write("Digite 0 en el campo ID para salir de la captura...");
 
 
                 Console.SetCursorPosition(21, 8); veterinario.Id = int.Parse(Console.ReadLine());
@@ -38,15 +39,10 @@ namespace GUI
 
                 var mensaje=servicio.Guardar(veterinario);
                 Console.Clear();
-                Console.SetCursorPosition(40, 1); Console.Write(mensaje);
+                Console.SetCursorPosition(30, 1); Console.Write(mensaje);
                 Console.ReadKey();
 
             } while (true);
-        }
-
-        public void Imprimir()
-        {
-            throw new NotImplementedException();
         }
 
         public void Menu()
@@ -59,8 +55,8 @@ namespace GUI
 
                 Console.SetCursorPosition(32, 10); Console.Write("1. Capturar");
                 Console.SetCursorPosition(32, 12); Console.Write("2. Consultar");
-                Console.SetCursorPosition(32, 14); Console.Write("3. otro ...");
-                Console.SetCursorPosition(32, 16); Console.Write("4. otro mas");
+                Console.SetCursorPosition(32, 14); Console.Write("3. Actualizar");
+                Console.SetCursorPosition(32, 16); Console.Write("4. Eliminar");
 
                 Console.SetCursorPosition(32, 22); Console.Write("0. Salir");
                 Console.SetCursorPosition(32, 24); Console.Write("Digite una opción: ");
@@ -74,17 +70,85 @@ namespace GUI
                     case 2:
                         Consultar();
                         break;
+                    case 4:
+                        Eliminar();
+                        break;
 
-                   
+
                 }
 
             } while (op !=0);
         }
 
-        public  void Consultar()
+        public void Consultar()
         {
             Console.Clear();
-            Console.WriteLine("deberias haberlo programado ...");
+            var lista = servicio.Consultar();
+            if(lista.Count == 0)
+            {
+                Console.SetCursorPosition(30, 1); Console.Write("No hay veterinarios registrados, pulse cualquier tecla para continuar...");
+                Console.ReadKey();
+                return;
+            }
+
+            Console.SetCursorPosition(30, 5); Console.Write("C O N S U L T A - V E T E R I N A R I O S");
+            Console.SetCursorPosition(20, 8); Console.Write($"Total de veterinarios registrados: {lista.Count}");
+            int y = 13;
+            Console.SetCursorPosition(20, 10); Console.Write("--------------------------------------------------------------------------------");
+            Console.SetCursorPosition(20, 11); Console.Write("ID");
+            Console.SetCursorPosition(30, 11); Console.Write("NOMBRE");
+            Console.SetCursorPosition(60, 11); Console.Write("DIRECCIÓN");
+            Console.SetCursorPosition(90, 11); Console.Write("TELÉFONO");
+            Console.SetCursorPosition(20, 10); Console.Write("--------------------------------------------------------------------------------");
+            for (int i = 0; i < lista.Count; i++, y++)
+            {
+                Console.SetCursorPosition(20, y); Console.Write(lista[i].Id);
+                Console.SetCursorPosition(30, y); Console.Write(lista[i].Nombres);
+                Console.SetCursorPosition(60, y); Console.Write(lista[i].Direccion);
+                Console.SetCursorPosition(90, y); Console.Write(lista[i].Telefono);
+                Console.SetCursorPosition(20, y+1); Console.Write("--------------------------------------------------------------------------------");
+            }
+           
+            Console.ReadKey();
+        }
+
+        public void Actualizar()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Eliminar()
+        {
+            Console.Clear();
+            var lista = servicio.Consultar();
+            Veterinario veterinario = new Veterinario();
+            if (lista.Count == 0)
+            {
+                Console.SetCursorPosition(30, 1); Console.Write("No hay veterinarios registrados, pulse cualquier tecla para continuar...");
+                Console.ReadKey();
+                return;
+            }
+            Console.SetCursorPosition(30, 5); Console.Write("E L I M I N A R - V E T E R I N A R I O S");
+            Console.SetCursorPosition(20, 8); Console.Write("Digite el ID del veterinario a eliminar: ");
+            Console.SetCursorPosition(61, 8); veterinario.Id = int.Parse(Console.ReadLine());
+            if (veterinario.Id < 1)
+            {
+                Console.SetCursorPosition(20, 15); Console.Write("ID inválido, debe ser un número entero positivo...");
+                return;
+            }
+
+            if (servicio.Eliminar(veterinario))
+            {
+                Console.SetCursorPosition(20, 15); Console.Write($"Nombres: {veterinario.Nombres}");
+                Console.SetCursorPosition(20, 16); Console.Write($"Dirección: {veterinario.Direccion}");
+                Console.SetCursorPosition(20, 17); Console.Write($"Teléfono: {veterinario.Telefono}");
+                Console.SetCursorPosition(20, 19); Console.Write("Veterinario eliminado exitosamente...");
+            }
+            else
+            {
+                Console.SetCursorPosition(20, 15); Console.Write("No se encontró un veterinario con el ID proporcionado...");
+            }
+
             Console.ReadKey();
         }
     }

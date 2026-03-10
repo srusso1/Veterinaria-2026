@@ -9,6 +9,8 @@ namespace GUI
     public interface IVistas
     {
         void Capturar();
-        void Imprimir();
+        void Consultar();
+        void Actualizar();
+        void Eliminar();
     }
 }

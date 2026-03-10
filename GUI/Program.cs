@@ -14,8 +14,6 @@ namespace GUI
         {
             //new VistaVeterinaria().Capturar();
             new VistaPrincipal().Menu();
-
-            Console.ReadKey();
         }
     }
 }
